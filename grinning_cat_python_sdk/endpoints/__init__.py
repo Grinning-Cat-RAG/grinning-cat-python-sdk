@@ -7,6 +7,7 @@ from grinning_cat_python_sdk.endpoints.context_retriever import ContextRetriever
 from grinning_cat_python_sdk.endpoints.conversation import ConversationEndpoint
 from grinning_cat_python_sdk.endpoints.custom_endpoint import CustomEndpoint
 from grinning_cat_python_sdk.endpoints.embedder import EmbedderEndpoint
+from grinning_cat_python_sdk.endpoints.ingestion import IngestionEndpoint
 from grinning_cat_python_sdk.endpoints.file_manager import FileManagerEndpoint
 from grinning_cat_python_sdk.endpoints.large_language_model import LargeLanguageModelEndpoint
 from grinning_cat_python_sdk.endpoints.memory import MemoryEndpoint

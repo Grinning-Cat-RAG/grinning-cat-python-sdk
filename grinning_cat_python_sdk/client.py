@@ -10,6 +10,7 @@ from grinning_cat_python_sdk.endpoints import (
     CustomEndpoint,
     EmbedderEndpoint,
     FileManagerEndpoint,
+    IngestionEndpoint,
     LargeLanguageModelEndpoint,
     MemoryEndpoint,
     MessageEndpoint,
@@ -85,6 +86,10 @@ class GrinningCatClient:
     @property
     def embedder(self):
         return EmbedderEndpoint(self)
+
+    @property
+    def ingestion(self):
+        return IngestionEndpoint(self)
 
     @property
     def file_manager(self):

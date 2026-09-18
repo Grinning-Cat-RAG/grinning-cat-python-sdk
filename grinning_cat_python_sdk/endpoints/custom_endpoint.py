@@ -17,6 +17,22 @@ class CustomEndpoint(AbstractEndpoint):
         """
         return self.get(url, agent_id, user_id=user_id, query=query)
 
+    def get_global_message(self) -> Any:
+        """
+        Read the ``mgmt_message`` plugin's global banner via its public,
+        unauthenticated endpoint.
+
+        Returns the 4-field settings dict stored by the plugin:
+        ``{"management_message": str, "management_active": bool,
+        "global_message": str, "show_global_msg": bool}``.
+
+        Uses the base (unauthenticated) HTTP session: the endpoint is public by
+        design, so no auth key or token is required (or useful).
+        """
+        response = self.get_http_session().get("/mgmt_message/global_message")
+        response.raise_for_status()
+        return response.json()
+
     def post_custom(
         self, url: str, agent_id: str, payload: Dict[str, Any] | None = None, user_id: str | None = None
     ) -> Any:

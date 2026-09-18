@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from pydantic import BaseModel
 
 
@@ -6,6 +6,12 @@ class PropertySettingsOutput(BaseModel):
     default: Any
     title: str | None = None
     type: str | None = None
+    # JSON-Schema metadata that Pydantic emits from model_json_schema().
+    # Exposed explicitly so the admin UI can render hints/enum choosers and
+    # mask password-like fields (they are silently dropped otherwise).
+    description: str | None = None
+    enum: List[Any] | None = None
+    format: str | None = None
     extra: Dict[str, Any] | None = None
 
 
