@@ -26,6 +26,25 @@ configuration = Configuration(host="localhost", port=1865, auth_key="test", secu
 
 cat_client = GrinningCatClient(configuration)
 ```
+
+Authenticate with a username and password (the client keeps the returned access token for the following calls),
+refresh it before it expires, and log out to revoke the session:
+
+```python
+from grinning_cat_python_sdk import GrinningCatClient, Configuration
+
+configuration = Configuration(host="localhost", port=1865, auth_key="test", secure_connection=False)
+cat_client = GrinningCatClient(configuration)
+
+token = cat_client.auth.token("username", "password")
+# token.access_token, token.expires_in, token.refresh_token, token.refresh_expires_in
+
+# before the access token expires, exchange the (single-use) refresh token for a new pair
+token = cat_client.auth.refresh(token.refresh_token)
+
+# revoke the session; already-issued access tokens stay valid until they expire
+cat_client.auth.logout(token.refresh_token)
+```
 Send a message to the websocket:
 
 ```python

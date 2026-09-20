@@ -1,7 +1,7 @@
 [project]
 name = "grinning-cat-python-sdk"
 description = "Python SDK for the Cloud-ready fork of the Grinning Cat"
-version = "1.0.4"
+version = "1.0.5"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [

@@ -29,6 +29,33 @@ class AuthEndpoint(AbstractEndpoint):
 
         return result
 
+    def refresh(self, refresh_token: str) -> TokenOutput:
+        """
+        Exchanges a refresh token for a new access token. The refresh token is rotated: the one returned here
+        replaces it and must be used for the next refresh, since the submitted one is consumed and reusing it
+        revokes the whole session.
+        """
+        response = self.get_http_session().post(
+            self.format_url("/refresh"),
+            json={"refresh_token": refresh_token},
+        )
+        response.raise_for_status()
+
+        result = deserialize(response.json(), TokenOutput)
+        self.client.add_token(result.access_token)
+
+        return result
+
+    def logout(self, refresh_token: str) -> None:
+        """
+        Revokes the session the refresh token belongs to. Already-issued access tokens stay valid until they expire.
+        """
+        response = self.get_http_session().post(
+            self.format_url("/logout"),
+            json={"refresh_token": refresh_token},
+        )
+        response.raise_for_status()
+
     def get_available_permissions(self) -> dict[int | str, Any]:
         """
         This endpoint is used to get a list of available permissions in the system. The permissions are used to define
