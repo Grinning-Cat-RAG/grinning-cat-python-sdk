@@ -36,7 +36,8 @@ class GrinningCatClient:
             host=configuration.host,
             port=configuration.port,
             apikey=configuration.auth_key,
-            is_wss=configuration.secure_connection
+            is_wss=configuration.secure_connection,
+            max_size=configuration.ws_max_size,
         )
 
         if token:

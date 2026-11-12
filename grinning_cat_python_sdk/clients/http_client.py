@@ -19,16 +19,9 @@ class HttpClient:
         self.user_id = None
         self.chat_id = None
         self.is_https = is_https
-        # Deprecated: kept only for backwards compatibility with consumers that
-        # read this attribute. It holds the base auth headers and is never used
-        # to build requests anymore; every request gets its own fresh dict.
-        self.headers: dict[str, str] = {}
-        if apikey:
-            self.headers["Authorization"] = f"Bearer {apikey}"
 
     def set_token(self, token: str):
         self.token = token
-        self.headers["Authorization"] = f"Bearer {token}"
         return self
 
     def get_http_uri(self) -> str:

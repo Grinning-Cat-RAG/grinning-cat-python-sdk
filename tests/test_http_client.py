@@ -48,9 +48,12 @@ def test_get_client_requires_credentials():
         client.get_client()
 
 
-def test_legacy_headers_attribute_is_not_used_for_requests():
-    client = make_client()
-    client.headers["X-Chat-ID"] = "stale"
+def test_user_id_is_sent_with_token_only_auth():
+    client = HttpClient(host="localhost", port=1865)
+    client.set_token("tok")
 
-    session = client.get_client(chat_id=None)
-    assert "X-Chat-ID" not in session.headers
+    session = client.get_client(agent_id="a", user_id="u", chat_id="c")
+    assert session.headers["Authorization"] == "Bearer tok"
+    assert session.headers["X-User-ID"] == "u"
+    assert session.headers["X-Agent-ID"] == "a"
+    assert session.headers["X-Chat-ID"] == "c"

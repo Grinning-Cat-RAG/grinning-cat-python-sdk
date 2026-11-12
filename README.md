@@ -27,6 +27,9 @@ configuration = Configuration(host="localhost", port=1865, auth_key="test", secu
 cat_client = GrinningCatClient(configuration)
 ```
 
+The WebSocket client accepts messages up to 256 MiB by default; change it with `Configuration(..., ws_max_size=<bytes>)`
+(`None` removes the limit).
+
 Authenticate with a username and password (the client keeps the returned access token for the following calls),
 refresh it before it expires, and log out to revoke the session:
 
