@@ -1,6 +1,6 @@
+from requests.structures import CaseInsensitiveDict
 from requests_toolbelt.sessions import BaseUrlSession
 from urllib.parse import urlunparse
-from typing import Callable, List
 
 
 class HttpClient:
@@ -19,15 +19,16 @@ class HttpClient:
         self.user_id = None
         self.chat_id = None
         self.is_https = is_https
-        self.headers = {}
-
-        self.middlewares: List[Callable] = [
-            self.__before_secure_request,
-            self.__before_jwt_request,
-        ]
+        # Deprecated: kept only for backwards compatibility with consumers that
+        # read this attribute. It holds the base auth headers and is never used
+        # to build requests anymore; every request gets its own fresh dict.
+        self.headers: dict[str, str] = {}
+        if apikey:
+            self.headers["Authorization"] = f"Bearer {apikey}"
 
     def set_token(self, token: str):
         self.token = token
+        self.headers["Authorization"] = f"Bearer {token}"
         return self
 
     def get_http_uri(self) -> str:
@@ -36,23 +37,13 @@ class HttpClient:
 
         return urlunparse((scheme, netloc, "", "", "", ""))
 
-    def __before_secure_request(self):
-        if self.apikey:
-            self.headers["Authorization"] = f"Bearer {self.apikey}"
-        if self.agent_id:
-            self.headers["X-Agent-ID"] = self.agent_id
-        if self.user_id:
-            self.headers["X-User-ID"] = self.user_id
-        if self.chat_id:
-            self.headers["X-Chat-ID"] = self.chat_id
-
-    def __before_jwt_request(self):
+    def _base_headers(self) -> dict[str, str]:
+        headers: dict[str, str] = {}
         if self.token:
-            self.headers["Authorization"] = f"Bearer {self.token}"
-        if self.agent_id:
-            self.headers["X-Agent-ID"] = self.agent_id
-        if self.chat_id:
-            self.headers["X-Chat-ID"] = self.chat_id
+            headers["Authorization"] = f"Bearer {self.token}"
+        elif self.apikey:
+            headers["Authorization"] = f"Bearer {self.apikey}"
+        return headers
 
     def get_client(
         self,
@@ -67,13 +58,20 @@ class HttpClient:
         self.user_id = user_id
         self.chat_id = chat_id
 
-        for middleware in self.middlewares:
-            middleware()
+        headers = self._base_headers()
+        if agent_id:
+            headers["X-Agent-ID"] = agent_id
+        if user_id:
+            headers["X-User-ID"] = user_id
+        if chat_id:
+            headers["X-Chat-ID"] = chat_id
 
-        return self.get_base_session()
+        session = BaseUrlSession(base_url=self.get_http_uri())
+        session.headers = CaseInsensitiveDict(headers)
+        return session
 
     def get_base_session(self) -> BaseUrlSession:
         session = BaseUrlSession(base_url=self.get_http_uri())
-        session.headers = self.headers
+        session.headers = CaseInsensitiveDict(self._base_headers())
 
         return session

@@ -27,6 +27,7 @@ class ConversationEndpoint(AbstractEndpoint):
             self.format_url(f"{chat_id}/history"),
             agent_id,
             user_id=user_id,
+            chat_id=chat_id,
             output_class=ConversationHistoryOutput,
         )
 
@@ -55,6 +56,7 @@ class ConversationEndpoint(AbstractEndpoint):
             self.format_url(chat_id),
             agent_id,
             user_id=user_id,
+            chat_id=chat_id,
             output_class=ConversationsResponse,
         )
 
@@ -71,6 +73,7 @@ class ConversationEndpoint(AbstractEndpoint):
             agent_id,
             output_class=ConversationDeleteOutput,
             user_id=user_id,
+            chat_id=chat_id,
         )
 
     def put_conversation_attributes(
@@ -105,4 +108,5 @@ class ConversationEndpoint(AbstractEndpoint):
             output_class=ConversationAttributesChangeOutput,
             payload=payload,
             user_id=user_id,
+            chat_id=chat_id,
         )

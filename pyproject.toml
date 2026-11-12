@@ -43,6 +43,9 @@ Documentation = "https://github.com/matteocacciola/grinning-cat-python-sdk#READM
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = ["pytest"]
+
 [tool.coverage.run]
 source = ["grinning_cat_python_sdk"]
 

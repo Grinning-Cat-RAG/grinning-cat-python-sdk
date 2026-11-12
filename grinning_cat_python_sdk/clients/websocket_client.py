@@ -10,12 +10,14 @@ class WSClient:
         port: int | None = None,
         apikey: str | None = None,
         is_wss: bool | None = False,
+        max_size: int | None = 256 * 1024 * 1024,
     ):
         self.host = host
         self.port = port
         self.apikey = apikey
         self.token = None
         self.is_wss = is_wss
+        self.max_size = max_size
         self.ws_client = None
 
     def set_token(self, token: str) -> "WSClient":
@@ -52,7 +54,13 @@ class WSClient:
                     raise ValueError("You must provide an apikey or a token")
 
                 # Create a WebSocket connection
-                websocket = await connect(uri, ping_interval=100000, ping_timeout=100000, additional_headers=headers)
+                websocket = await connect(
+                    uri,
+                    ping_interval=100000,
+                    ping_timeout=100000,
+                    additional_headers=headers,
+                    max_size=self.max_size,
+                )
                 self.ws_client = websocket
             except InvalidURI as e:
                 raise ValueError(f"Invalid WebSocket URI: {uri}") from e
