@@ -10,3 +10,7 @@ venv
 .DS_Store
 .idea
 dist/
+# local agent tooling
+.opencode
+.omo
+AGENTS.md
